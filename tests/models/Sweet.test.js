@@ -127,3 +127,18 @@ describe("validation", () => {
     expect(sweet.category).toBe("others");
   });
 });
+
+
+describe('toString', () => {
+  test('should return formatted string representation', () => {
+    // Arrange
+    const sweet = new Sweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
+    const expected = 'Sweet(1001, Kaju Katli, Nut-Based, ₹50, Stock: 20)';
+
+    // Act
+    const result = sweet.toString();
+
+    // Assert
+    expect(result).toBe(expected);
+  });
+});
