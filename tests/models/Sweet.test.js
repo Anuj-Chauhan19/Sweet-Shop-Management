@@ -111,4 +111,19 @@ describe("validation", () => {
       expect(sweet.category).toBe(category);
     });
   });
+
+  test('should allow "others" as a valid category', () => {
+    // Arrange
+    const id = 1005;
+    const name = "Imarti";
+    const category = "others";
+    const price = 25;
+    const quantity = 12;
+
+    // Act
+    const sweet = new Sweet(id, name, category, price, quantity);
+
+    // Assert
+    expect(sweet.category).toBe("others");
+  });
 });
