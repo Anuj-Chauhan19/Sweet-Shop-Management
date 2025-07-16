@@ -26,6 +26,10 @@ class SweetShop {
     return true;
   }
 
+  viewAllSweets() {
+    return Array.from(this._sweets.values());
+  }
+
   getTotalSweets() {
     return this._sweets.size;
   }
