@@ -36,3 +36,34 @@ describe("POST /api/sweets", () => {
     expect(res.body.name).toBe("Kaju Katli");
   });
 });
+
+describe("GET /api/sweets", () => {
+  test("should return all sweets", async () => {
+    // Arrange
+    await request(app).post("/api/sweets").send({
+      id: 2001,
+      name: "Ladoo",
+      category: "Others",
+      price: 25,
+      quantity: 10,
+    });
+
+    await request(app).post("/api/sweets").send({
+      id: 2002,
+      name: "Barfi",
+      category: "Candy",
+      price: 30,
+      quantity: 5,
+    });
+
+    // Act
+    const res = await request(app).get("/api/sweets");
+
+    // Assert
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(2);
+    expect(res.body[0].name).toBe("Ladoo");
+    expect(res.body[1].name).toBe("Barfi");
+  });
+});
+
