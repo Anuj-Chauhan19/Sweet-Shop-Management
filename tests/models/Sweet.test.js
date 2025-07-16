@@ -22,3 +22,61 @@ describe('Sweet', () => {
     });
   });
 });
+
+describe('validation', () => {
+  test('should throw error for invalid id', () => {
+    // Arrange
+    const invalidId = null;
+    const name = 'Kaju Katli';
+    const category = 'Nut-Based';
+    const price = 50;
+    const quantity = 20;
+
+    // Act & Assert
+    expect(() => {
+      new Sweet(invalidId, name, category, price, quantity);
+    }).toThrow('ID is required');
+  });
+
+  test('should throw error for empty name', () => {
+    // Arrange
+    const id = 1001;
+    const name = '';
+    const category = 'Nut-Based';
+    const price = 50;
+    const quantity = 20;
+
+    // Act & Assert
+    expect(() => {
+      new Sweet(id, name, category, price, quantity);
+    }).toThrow('Name is required');
+  });
+
+  test('should throw error for negative price', () => {
+    // Arrange
+    const id = 1001;
+    const name = 'Kaju Katli';
+    const category = 'Nut-Based';
+    const price = -10;
+    const quantity = 20;
+
+    // Act & Assert
+    expect(() => {
+      new Sweet(id, name, category, price, quantity);
+    }).toThrow('Price must be positive');
+  });
+
+  test('should throw error for negative quantity', () => {
+    // Arrange
+    const id = 1001;
+    const name = 'Kaju Katli';
+    const category = 'Nut-Based';
+    const price = 50;
+    const quantity = -5;
+
+    // Act & Assert
+    expect(() => {
+      new Sweet(id, name, category, price, quantity);
+    }).toThrow('Quantity must be non-negative');
+  });
+});
