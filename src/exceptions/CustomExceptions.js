@@ -5,6 +5,14 @@ class InvalidDataException extends Error {
   }
 }
 
+class DuplicateSweetException extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'DuplicateSweetException';
+  }
+}
+
 module.exports = {
-  InvalidDataException
+  InvalidDataException,
+  DuplicateSweetException
 };

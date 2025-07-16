@@ -27,7 +27,7 @@ class Sweet {
     );
   }
   _validateInput(id, name, category, price, quantity) {
-    const allowedCategories = ["chocolate", "candy", "pastry", "Nut-Based", "others"];
+    const allowedCategories = ["chocolate", "candy", "pastry", "nut-based", "others"];
 
     if (!id) {
       throw new InvalidDataException("ID is required");
