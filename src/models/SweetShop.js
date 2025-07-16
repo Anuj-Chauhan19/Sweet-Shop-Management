@@ -30,6 +30,13 @@ class SweetShop {
     return Array.from(this._sweets.values());
   }
 
+  searchByName(name) {
+    const searchTerm = name.toLowerCase();
+    return this.viewAllSweets().filter((sweet) =>
+      sweet.name.toLowerCase().includes(searchTerm)
+    );
+  }
+
   getTotalSweets() {
     return this._sweets.size;
   }
