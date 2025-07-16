@@ -11,8 +11,11 @@ class Sweet {
     this.price = price;
     this.quantity = quantity;
   }
+  toString() {
+    return `Sweet(${this.id}, ${this.name}, ${this.category}, ₹${this.price}, Stock: ${this.quantity})`;
+  }
   _validateInput(id, name, category, price, quantity) {
-    const allowedCategories = ["chocolate", "candy", "pastry","others"];
+    const allowedCategories = ["chocolate", "candy", "pastry", "others"];
 
     if (!id) {
       throw new InvalidDataException("ID is required");

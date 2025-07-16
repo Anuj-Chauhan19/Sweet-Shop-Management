@@ -132,8 +132,8 @@ describe("validation", () => {
 describe('toString', () => {
   test('should return formatted string representation', () => {
     // Arrange
-    const sweet = new Sweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
-    const expected = 'Sweet(1001, Kaju Katli, Nut-Based, ₹50, Stock: 20)';
+    const sweet = new Sweet(1001, 'Kaju Katli', 'others', 50, 20);
+    const expected = 'Sweet(1001, Kaju Katli, others, ₹50, Stock: 20)';
 
     // Act
     const result = sweet.toString();
