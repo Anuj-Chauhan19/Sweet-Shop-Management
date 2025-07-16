@@ -1,4 +1,7 @@
-const { DuplicateSweetException } = require('../../src/exceptions/CustomExceptions');
+const {
+  DuplicateSweetException,
+  SweetNotFoundException,
+} = require("../../src/exceptions/CustomExceptions");
 
 class SweetShop {
   constructor() {
@@ -7,9 +10,19 @@ class SweetShop {
 
   addSweet(sweet) {
     if (this._sweets.has(sweet.id)) {
-      throw new DuplicateSweetException(`Sweet with ID ${sweet.id} already exists`);
+      throw new DuplicateSweetException(
+        `Sweet with ID ${sweet.id} already exists`
+      );
     }
     this._sweets.set(sweet.id, sweet);
+    return true;
+  }
+
+  deleteSweet(id) {
+    if (!this._sweets.has(id)) {
+      throw new SweetNotFoundException(`Sweet with ID ${id} not found`);
+    }
+    this._sweets.delete(id);
     return true;
   }
 
