@@ -14,6 +14,18 @@ class Sweet {
   toString() {
     return `Sweet(${this.id}, ${this.name}, ${this.category}, ₹${this.price}, Stock: ${this.quantity})`;
   }
+  equals(other) {
+    if (!(other instanceof Sweet)) {
+      return false;
+    }
+    return (
+      this.id === other.id &&
+      this.name === other.name &&
+      this.category === other.category &&
+      this.price === other.price &&
+      this.quantity === other.quantity
+    );
+  }
   _validateInput(id, name, category, price, quantity) {
     const allowedCategories = ["chocolate", "candy", "pastry", "others"];
 

@@ -145,8 +145,8 @@ describe("toString", () => {
 describe("equals", () => {
   test("should return true for identical sweets", () => {
     // Arrange
-    const sweet1 = new Sweet(1001, "Kaju Katli", "Nut-Based", 50, 20);
-    const sweet2 = new Sweet(1001, "Kaju Katli", "Nut-Based", 50, 20);
+    const sweet1 = new Sweet(1001, "Kaju Katli", "Chocolate", 50, 20);
+    const sweet2 = new Sweet(1001, "Kaju Katli", "Chocolate", 50, 20);
 
     // Act
     const result = sweet1.equals(sweet2);
@@ -157,8 +157,8 @@ describe("equals", () => {
 
   test("should return false for different sweets", () => {
     // Arrange
-    const sweet1 = new Sweet(1001, "Kaju Katli", "Nut-Based", 50, 20);
-    const sweet2 = new Sweet(1002, "Gajar Halwa", "Vegetable-Based", 30, 15);
+    const sweet1 = new Sweet(1001, "Kaju Katli", "Chocolate", 50, 20);
+    const sweet2 = new Sweet(1002, "Gajar Halwa", "Candy", 30, 15);
 
     // Act
     const result = sweet1.equals(sweet2);
