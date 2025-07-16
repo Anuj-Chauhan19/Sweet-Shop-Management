@@ -6,7 +6,7 @@ describe("Sweet", () => {
       // Arrange
       const id = 1001;
       const name = "Kaju Katli";
-      const category = "Nut-Based";
+      const category = "Chocolate";
       const price = 50;
       const quantity = 20;
 

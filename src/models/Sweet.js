@@ -1,4 +1,6 @@
-const { InvalidDataException } = require("../../src/exceptions/CustomExceptions");
+const {
+  InvalidDataException,
+} = require("../../src/exceptions/CustomExceptions");
 
 class Sweet {
   constructor(id, name, category, price, quantity) {
@@ -10,6 +12,8 @@ class Sweet {
     this.quantity = quantity;
   }
   _validateInput(id, name, category, price, quantity) {
+    const allowedCategories = ["chocolate", "candy", "pastry"];
+
     if (!id) {
       throw new InvalidDataException("ID is required");
     }
@@ -24,6 +28,11 @@ class Sweet {
     }
     if (quantity < 0) {
       throw new InvalidDataException("Quantity must be non-negative");
+    }
+    if (!allowedCategories.includes(category.toLowerCase())) {
+      throw new InvalidDataException(
+        `Category must be one of: ${allowedCategories.join(", ")}`
+      );
     }
   }
 }
