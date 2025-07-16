@@ -53,3 +53,33 @@ describe('deleteSweet', () => {
     }).toThrow('Sweet with ID 9999 not found');
   });
 });
+
+describe('viewAllSweets', () => {
+  test('should return all sweets', () => {
+    // Arrange
+    const shop = new SweetShop();
+    const sweet1 = new Sweet(1001, 'Kaju Katli', 'Nut-Based', 50, 20);
+    const sweet2 = new Sweet(1002, 'Gajar Halwa', 'Vegetable-Based', 30, 15);
+    shop.addSweet(sweet1);
+    shop.addSweet(sweet2);
+
+    // Act
+    const result = shop.viewAllSweets();
+
+    // Assert
+    expect(result).toHaveLength(2);
+    expect(result).toContainEqual(sweet1);
+    expect(result).toContainEqual(sweet2);
+  });
+
+  test('should return empty array when no sweets', () => {
+    // Arrange
+    const shop = new SweetShop();
+
+    // Act
+    const result = shop.viewAllSweets();
+
+    // Assert
+    expect(result).toHaveLength(0);
+  });
+});
