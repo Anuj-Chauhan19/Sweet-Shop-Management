@@ -3,20 +3,7 @@ const mongoose = require("mongoose");
 const app = require("../../src/app.js");
 
 describe("POST /api/sweets", () => {
-  beforeAll(async () => {
-    await mongoose.connect("mongodb://localhost:27017/sweetshop-test");
-  });
-
-  afterEach(async () => {
-    const collections = await mongoose.connection.db.collections();
-    for (let collection of collections) {
-      await collection.deleteMany({});
-    }
-  });
-
-  afterAll(async () => {
-    await mongoose.disconnect();
-  });
+  
 
   test("should create a sweet with valid data", async () => {
     // Arrange
@@ -38,12 +25,14 @@ describe("POST /api/sweets", () => {
 });
 
 describe("GET /api/sweets", () => {
+   
+
   test("should return all sweets", async () => {
     // Arrange
     await request(app).post("/api/sweets").send({
       id: 2001,
       name: "Ladoo",
-      category: "Others",
+      category: "others",
       price: 25,
       quantity: 10,
     });

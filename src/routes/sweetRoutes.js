@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { addSweet } = require("../controllers/sweetController.mongo");
+const { addSweet, viewAllSweets, } = require("../controllers/sweetController.mongo");
 
 router.post("/", addSweet);
+router.get("/", viewAllSweets);
 
 module.exports = router;
