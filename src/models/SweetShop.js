@@ -1,6 +1,7 @@
 const {
   DuplicateSweetException,
   SweetNotFoundException,
+  InsufficientStockException,
 } = require("../../src/exceptions/CustomExceptions");
 
 class SweetShop {
@@ -35,6 +36,21 @@ class SweetShop {
     return this.viewAllSweets().filter((sweet) =>
       sweet.name.toLowerCase().includes(searchTerm)
     );
+  }
+
+  purchaseSweet(id, quantity) {
+    if (!this._sweets.has(id)) {
+      throw new SweetNotFoundException(`Sweet with ID ${id} not found`);
+    }
+
+    const sweet = this._sweets.get(id);
+    if (sweet.quantity < quantity) {
+      throw new InsufficientStockException(
+        `Insufficient stock. Available: ${sweet.quantity}, Requested: ${quantity}`
+      );
+    }
+    sweet.quantity -= quantity;
+    return true;
   }
 
   getTotalSweets() {

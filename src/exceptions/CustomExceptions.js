@@ -19,8 +19,16 @@ class SweetNotFoundException extends Error {
   }
 }
 
+class InsufficientStockException extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'InsufficientStockException';
+  }
+}
+
 module.exports = {
   InvalidDataException,
   DuplicateSweetException,
-  SweetNotFoundException
+  SweetNotFoundException,
+  InsufficientStockException
 };
