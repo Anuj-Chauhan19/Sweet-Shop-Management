@@ -102,6 +102,14 @@ const searchSweetsByName = async (req, res, next) => {
   }
 };
 
+const sortSweetsByPrice = async (req, res, next) => {
+  try {
+    const sweets = await Sweet.find().sort({ price: 1 });
+    res.status(200).json(sweets);
+  } catch (err) {
+    next(err);
+  }
+};
 
 
-module.exports = { addSweet, viewAllSweets, viewSweetById , deleteSweetById, purchaseSweet, restockSweet, searchSweetsByName };
+module.exports = { addSweet, viewAllSweets, viewSweetById , deleteSweetById, purchaseSweet, restockSweet, searchSweetsByName, sortSweetsByPrice };

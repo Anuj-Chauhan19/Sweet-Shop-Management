@@ -242,6 +242,46 @@ describe("GET /api/sweets/search?name=", () => {
   });
 });
 
+describe("GET /api/sweets/sort/price", () => {
+  test("should return sweets sorted by price ascending", async () => {
+    // Arrange
+    await request(app).post("/api/sweets").send({
+      id: 9001,
+      name: "Milk Cake",
+      category: "Pastry",
+      price: 50,
+      quantity: 10,
+    });
+
+    await request(app).post("/api/sweets").send({
+      id: 9002,
+      name: "Peda",
+      category: "Candy",
+      price: 30,
+      quantity: 15,
+    });
+
+    await request(app).post("/api/sweets").send({
+      id: 9003,
+      name: "Soan Papdi",
+      category: "Others",
+      price: 40,
+      quantity: 20,
+    });
+
+    // Act
+    const res = await request(app).get("/api/sweets/sort/price");
+
+    // Assert
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(3);
+    expect(res.body[0].name).toBe("Peda");
+    expect(res.body[1].name).toBe("Soan Papdi");
+    expect(res.body[2].name).toBe("Milk Cake");
+  });
+});
+
+
 
 
 
