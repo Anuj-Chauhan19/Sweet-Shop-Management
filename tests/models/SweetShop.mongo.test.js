@@ -150,6 +150,59 @@ describe("POST /api/sweets/:id/purchase", () => {
   });
 });
 
+describe("POST /api/sweets/:id/restock", () => {
+  test("should increase stock by given quantity", async () => {
+    // Arrange
+    await request(app).post("/api/sweets").send({
+      id: 4001,
+      name: "Peda",
+      category: "Chocolate",
+      price: 20,
+      quantity: 10,
+    });
+
+    // Act
+    const res = await request(app)
+      .post("/api/sweets/4001/restock")
+      .send({ quantity: 5 });
+
+    // Assert
+    expect(res.statusCode).toBe(200);
+    expect(res.body.quantity).toBe(15);
+  });
+
+  test("should return 400 if restock quantity is zero or negative", async () => {
+    // Arrange
+    await request(app).post("/api/sweets").send({
+      id: 4002,
+      name: "Soan Papdi",
+      category: "Pastry",
+      price: 15,
+      quantity: 5,
+    });
+
+    // Act
+    const res = await request(app)
+      .post("/api/sweets/4002/restock")
+      .send({ quantity: 0 });
+
+    // Assert
+    expect(res.statusCode).toBe(400);
+    expect(res.body.error).toMatch(/invalid restock quantity/i);
+  });
+
+  test("should return 404 if sweet not found", async () => {
+    // Act
+    const res = await request(app)
+      .post("/api/sweets/9999/restock")
+      .send({ quantity: 3 });
+
+    // Assert
+    expect(res.statusCode).toBe(404);
+    expect(res.body.error).toMatch(/sweet not found/i);
+  });
+});
+
 
 
 
