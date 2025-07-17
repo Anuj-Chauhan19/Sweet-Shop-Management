@@ -43,7 +43,30 @@ const deleteSweetById = async (req, res, next) => {
   }
 };
 
+const purchaseSweet = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { quantity } = req.body;
+
+    const sweet = await Sweet.findOne({ id });
+    if (!sweet) {
+      return res.status(404).json({ error: "Sweet not found" });
+    }
+
+    if (sweet.quantity < quantity) {
+      return res.status(400).json({ error: "Insufficient stock" });
+    }
+
+    sweet.quantity -= quantity;
+    await sweet.save();
+
+    res.status(200).json(sweet);
+  } catch (err) {
+    next(err);
+  }
+};
 
 
 
-module.exports = { addSweet, viewAllSweets, viewSweetById , deleteSweetById };
+
+module.exports = { addSweet, viewAllSweets, viewSweetById , deleteSweetById, purchaseSweet };
