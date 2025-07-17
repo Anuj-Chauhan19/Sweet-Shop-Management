@@ -204,5 +204,44 @@ describe("POST /api/sweets/:id/restock", () => {
 });
 
 
+describe("GET /api/sweets/search?name=", () => {
+  test("should return sweets matching name query (case-insensitive)", async () => {
+    // Arrange
+    await request(app).post("/api/sweets").send({
+      id: 7001,
+      name: "Gulab Jamun",
+      category: "Pastry",
+      price: 45,
+      quantity: 10,
+    });
+
+    await request(app).post("/api/sweets").send({
+      id: 7002,
+      name: "Barfi",
+      category: "Candy",
+      price: 30,
+      quantity: 15,
+    });
+
+    // Act
+    const res = await request(app).get("/api/sweets/search?name=bar");
+
+    // Assert
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(1);
+    expect(res.body[0].name).toBe("Barfi");
+  });
+
+  test("should return empty array if no sweets match", async () => {
+    // Act
+    const res = await request(app).get("/api/sweets/search?name=xyz");
+
+    // Assert
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(0);
+  });
+});
+
+
 
 

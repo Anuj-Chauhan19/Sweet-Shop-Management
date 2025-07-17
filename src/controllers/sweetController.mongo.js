@@ -89,5 +89,19 @@ const restockSweet = async (req, res, next) => {
   }
 };
 
+const searchSweetsByName = async (req, res, next) => {
+  try {
+    const nameQuery = req.query.name || "";
+    const sweets = await Sweet.find({
+      name: { $regex: nameQuery, $options: "i" },
+    });
 
-module.exports = { addSweet, viewAllSweets, viewSweetById , deleteSweetById, purchaseSweet, restockSweet };
+    res.status(200).json(sweets);
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+
+module.exports = { addSweet, viewAllSweets, viewSweetById , deleteSweetById, purchaseSweet, restockSweet, searchSweetsByName };
