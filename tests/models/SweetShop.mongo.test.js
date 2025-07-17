@@ -1,11 +1,21 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const app = require("../../src/app.js");
+const {
+  createSweet,
+  viewSweetById,
+  deleteSweet,
+  purchaseSweet,
+  restockSweet,
+  searchSweetByName,
+  sortSweetsByPrice,
+  viewAllSweets,
+} = require("../utils/SweetsHelper.js");
 
 describe("POST /api/sweets", () => {
   test("should create a sweet with valid data", async () => {
     // Arrange
-    const sweetData = {
+    const sweet = {
       id: 1001,
       name: "Kaju Katli",
       category: "Nut-Based",
@@ -14,7 +24,7 @@ describe("POST /api/sweets", () => {
     };
 
     // Act
-    const res = await request(app).post("/api/sweets").send(sweetData);
+    const res = await createSweet(sweet);
 
     // Assert
     expect(res.statusCode).toBe(201);
@@ -25,15 +35,14 @@ describe("POST /api/sweets", () => {
 describe("GET /api/sweets", () => {
   test("should return all sweets", async () => {
     // Arrange
-    await request(app).post("/api/sweets").send({
+    await createSweet({
       id: 2001,
       name: "Ladoo",
-      category: "others",
+      category: "Others",
       price: 25,
       quantity: 10,
     });
-
-    await request(app).post("/api/sweets").send({
+    await createSweet({
       id: 2002,
       name: "Barfi",
       category: "Candy",
@@ -42,7 +51,7 @@ describe("GET /api/sweets", () => {
     });
 
     // Act
-    const res = await request(app).get("/api/sweets");
+    const res = await viewAllSweets();
 
     // Assert
     expect(res.statusCode).toBe(200);
@@ -55,17 +64,17 @@ describe("GET /api/sweets", () => {
 describe("GET /api/sweets/:id", () => {
   test("should return sweet by ID", async () => {
     // Arrange
-    const sweetData = {
+    const sweet = {
       id: 3001,
       name: "Jalebi",
-      category: "candy",
+      category: "Candy",
       price: 40,
       quantity: 15,
     };
-    await request(app).post("/api/sweets").send(sweetData);
+    await createSweet(sweet);
 
     // Act
-    const res = await request(app).get("/api/sweets/3001");
+    const res = await viewSweetById(3001);
 
     // Assert
     expect(res.statusCode).toBe(200);
@@ -76,17 +85,17 @@ describe("GET /api/sweets/:id", () => {
 describe("DELETE /api/sweets/:id", () => {
   test("should delete sweet by ID", async () => {
     // Arrange
-    const sweetData = {
+    const sweet = {
       id: 4001,
       name: "Gulab Jamun",
-      category: "chocolate",
+      category: "Chocolate",
       price: 60,
       quantity: 25,
     };
-    await request(app).post("/api/sweets").send(sweetData);
+    await createSweet(sweet);
 
     // Act
-    const res = await request(app).delete("/api/sweets/4001");
+    const res = await deleteSweet(4001);
 
     // Assert
     expect(res.statusCode).toBe(200);
@@ -100,38 +109,34 @@ describe("DELETE /api/sweets/:id", () => {
 describe("POST /api/sweets/:id/purchase", () => {
   test("should decrease stock if quantity is available", async () => {
     // Arrange
-    await request(app).post("/api/sweets").send({
-      id: 3001,
-      name: "Gulab Jamun",
+    await createSweet({
+      id: 5001,
+      name: "Halwa",
       category: "Pastry",
-      price: 40,
+      price: 30,
       quantity: 10,
     });
 
     // Act
-    const res = await request(app)
-      .post("/api/sweets/3001/purchase")
-      .send({ quantity: 4 });
+    const res = await purchaseSweet(5001, 5);
 
     // Assert
     expect(res.statusCode).toBe(200);
-    expect(res.body.quantity).toBe(6);
+    expect(res.body.quantity).toBe(5);
   });
 
   test("should return 400 if insufficient stock", async () => {
     // Arrange
-    await request(app).post("/api/sweets").send({
+    await createSweet({
       id: 3002,
       name: "Rasgulla",
       category: "Candy",
-      price: 35,
+      price: 30,
       quantity: 3,
     });
 
     // Act
-    const res = await request(app)
-      .post("/api/sweets/3002/purchase")
-      .send({ quantity: 5 });
+    const res = await purchaseSweet(3002, 5);
 
     // Assert
     expect(res.statusCode).toBe(400);
@@ -140,9 +145,7 @@ describe("POST /api/sweets/:id/purchase", () => {
 
   test("should return 404 if sweet not found", async () => {
     // Act
-    const res = await request(app)
-      .post("/api/sweets/9999/purchase")
-      .send({ quantity: 2 });
+    const res = await purchaseSweet(9999, 45);
 
     // Assert
     expect(res.statusCode).toBe(404);
@@ -153,18 +156,16 @@ describe("POST /api/sweets/:id/purchase", () => {
 describe("POST /api/sweets/:id/restock", () => {
   test("should increase stock by given quantity", async () => {
     // Arrange
-    await request(app).post("/api/sweets").send({
-      id: 4001,
+    await createSweet({
+      id: 6001,
       name: "Peda",
-      category: "Chocolate",
+      category: "Candy",
       price: 20,
       quantity: 10,
     });
 
     // Act
-    const res = await request(app)
-      .post("/api/sweets/4001/restock")
-      .send({ quantity: 5 });
+    const res = await restockSweet(6001, 5);
 
     // Assert
     expect(res.statusCode).toBe(200);
@@ -173,18 +174,15 @@ describe("POST /api/sweets/:id/restock", () => {
 
   test("should return 400 if restock quantity is zero or negative", async () => {
     // Arrange
-    await request(app).post("/api/sweets").send({
-      id: 4002,
-      name: "Soan Papdi",
-      category: "Pastry",
-      price: 15,
-      quantity: 5,
+    await createSweet({
+      id: 6002,
+      name: "Peda",
+      category: "Candy",
+      price: 20,
+      quantity: 10,
     });
-
     // Act
-    const res = await request(app)
-      .post("/api/sweets/4002/restock")
-      .send({ quantity: 0 });
+    const res = await restockSweet(6002, 0);
 
     // Assert
     expect(res.statusCode).toBe(400);
@@ -193,9 +191,7 @@ describe("POST /api/sweets/:id/restock", () => {
 
   test("should return 404 if sweet not found", async () => {
     // Act
-    const res = await request(app)
-      .post("/api/sweets/9999/restock")
-      .send({ quantity: 3 });
+    const res = await restockSweet(9999, 5);
 
     // Assert
     expect(res.statusCode).toBe(404);
@@ -203,28 +199,26 @@ describe("POST /api/sweets/:id/restock", () => {
   });
 });
 
-
 describe("GET /api/sweets/search?name=", () => {
   test("should return sweets matching name query (case-insensitive)", async () => {
     // Arrange
-    await request(app).post("/api/sweets").send({
+    await createSweet({
       id: 7001,
-      name: "Gulab Jamun",
-      category: "Pastry",
-      price: 45,
+      name: "Barfi",
+      category: "Candy",
+      price: 25,
+      quantity: 10,
+    });
+    await createSweet({
+      id: 7002,
+      name: "Penda",
+      category: "Others",
+      price: 40,
       quantity: 10,
     });
 
-    await request(app).post("/api/sweets").send({
-      id: 7002,
-      name: "Barfi",
-      category: "Candy",
-      price: 30,
-      quantity: 15,
-    });
-
     // Act
-    const res = await request(app).get("/api/sweets/search?name=bar");
+    const res = await searchSweetByName("bar");
 
     // Assert
     expect(res.statusCode).toBe(200);
@@ -234,7 +228,7 @@ describe("GET /api/sweets/search?name=", () => {
 
   test("should return empty array if no sweets match", async () => {
     // Act
-    const res = await request(app).get("/api/sweets/search?name=xyz");
+    const res = await searchSweetByName("xyz");
 
     // Assert
     expect(res.statusCode).toBe(200);
@@ -245,33 +239,30 @@ describe("GET /api/sweets/search?name=", () => {
 describe("GET /api/sweets/sort/price", () => {
   test("should return sweets sorted by price ascending", async () => {
     // Arrange
-    await request(app).post("/api/sweets").send({
-      id: 9001,
-      name: "Milk Cake",
-      category: "Pastry",
-      price: 50,
-      quantity: 10,
-    });
-
-    await request(app).post("/api/sweets").send({
-      id: 9002,
+    await createSweet({
+      id: 8001,
       name: "Peda",
       category: "Candy",
       price: 30,
       quantity: 15,
     });
-
-    await request(app).post("/api/sweets").send({
-      id: 9003,
+    await createSweet({
+      id: 8002,
       name: "Soan Papdi",
-      category: "Others",
+      category: "Pastry",
       price: 40,
-      quantity: 20,
+      quantity: 10,
+    });
+    await createSweet({
+      id: 8003,
+      name: "Milk Cake",
+      category: "Others",
+      price: 50,
+      quantity: 5,
     });
 
     // Act
-    const res = await request(app).get("/api/sweets/sort/price");
-
+    const res = await sortSweetsByPrice();
     // Assert
     expect(res.statusCode).toBe(200);
     expect(res.body.length).toBe(3);
@@ -280,8 +271,3 @@ describe("GET /api/sweets/sort/price", () => {
     expect(res.body[2].name).toBe("Milk Cake");
   });
 });
-
-
-
-
-
