@@ -19,5 +19,18 @@ const viewAllSweets = async (req, res, next) => {
   }
 };
 
+const viewSweetById = async (req, res, next) => {
+  try {
+    const sweet = await Sweet.findOne({ id: req.params.id });
+    if (!sweet) {
+      return res.status(404).json({ error: "Sweet not found" });
+    }
+    res.status(200).json(sweet);
+  } catch (err) {
+    next(err);
+  }
+};
 
-module.exports = { addSweet, viewAllSweets };
+
+
+module.exports = { addSweet, viewAllSweets, viewSweetById };
