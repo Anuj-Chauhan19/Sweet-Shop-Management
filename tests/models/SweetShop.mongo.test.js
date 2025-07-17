@@ -56,3 +56,25 @@ describe("GET /api/sweets", () => {
   });
 });
 
+describe("GET /api/sweets/:id", () => {
+  test("should return sweet by ID", async () => {
+    // Arrange
+    const sweetData = {
+      id: 3001,
+      name: "Jalebi",
+      category: "candy",
+      price: 40,
+      quantity: 15,
+    };
+    await request(app).post("/api/sweets").send(sweetData);
+
+    // Act
+    const res = await request(app).get("/api/sweets/3001");
+
+    // Assert
+    expect(res.statusCode).toBe(200);
+    expect(res.body.name).toBe("Jalebi");
+  });
+});
+
+
