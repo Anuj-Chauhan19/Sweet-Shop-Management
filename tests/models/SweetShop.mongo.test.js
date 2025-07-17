@@ -97,6 +97,58 @@ describe("DELETE /api/sweets/:id", () => {
   });
 });
 
+describe("POST /api/sweets/:id/purchase", () => {
+  test("should decrease stock if quantity is available", async () => {
+    // Arrange
+    await request(app).post("/api/sweets").send({
+      id: 3001,
+      name: "Gulab Jamun",
+      category: "Pastry",
+      price: 40,
+      quantity: 10,
+    });
+
+    // Act
+    const res = await request(app)
+      .post("/api/sweets/3001/purchase")
+      .send({ quantity: 4 });
+
+    // Assert
+    expect(res.statusCode).toBe(200);
+    expect(res.body.quantity).toBe(6);
+  });
+
+  test("should return 400 if insufficient stock", async () => {
+    // Arrange
+    await request(app).post("/api/sweets").send({
+      id: 3002,
+      name: "Rasgulla",
+      category: "Candy",
+      price: 35,
+      quantity: 3,
+    });
+
+    // Act
+    const res = await request(app)
+      .post("/api/sweets/3002/purchase")
+      .send({ quantity: 5 });
+
+    // Assert
+    expect(res.statusCode).toBe(400);
+    expect(res.body.error).toMatch(/insufficient stock/i);
+  });
+
+  test("should return 404 if sweet not found", async () => {
+    // Act
+    const res = await request(app)
+      .post("/api/sweets/9999/purchase")
+      .send({ quantity: 2 });
+
+    // Assert
+    expect(res.statusCode).toBe(404);
+    expect(res.body.error).toMatch(/not found/i);
+  });
+});
 
 
 
